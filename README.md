@@ -37,6 +37,8 @@ Any static host works. Free options:
 - **GitHub Pages**: repository Settings, Pages, deploy from this branch.
 - **Cloudflare Pages**: connect the repository, no build command, output folder `/`.
 
+When you upload the site, leave out the `.claude` folder. It holds design tools, not website files.
+
 To preview on your computer: open a terminal in this folder, run `python3 -m http.server`, and visit http://localhost:8000.
 
 ## Files
@@ -47,5 +49,5 @@ assets/css/styles.css   design (colours at the top)
 assets/js/catalog.js    all products, services, prices and contact info
 assets/js/app.js        cart, booking, open now status
 assets/img/             favicon and social share image
-.claude/skills/         frontend-design skill used to design the site
+.claude/skills/         design skills (frontend-design, ui-ux-pro-max); not part of the website
 ```

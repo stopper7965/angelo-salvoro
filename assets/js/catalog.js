@@ -143,17 +143,17 @@ window.MYSTIKA = {
     {
       id: "house-blend", name: "Mystika House Blend", price: 450, unit: "250 g bag",
       desc: "The same beans in your latte. Chocolate, caramel, low acidity. Great for moka pot and espresso.",
-      notes: ["Chocolate", "Caramel", "Nutty"], color: "#6b3b22"
+      notes: ["Chocolate", "Caramel", "Nutty"], color: "#1c1c22"
     },
     {
       id: "single-origin", name: "Single Origin of the Month", price: 550, unit: "250 g bag",
       desc: "A rotating Philippine or imported lot, roasted light to medium for pour over.",
-      notes: ["Fruity", "Floral", "Bright"], color: "#b0532b"
+      notes: ["Fruity", "Floral", "Bright"], color: "#214dd1"
     },
     {
       id: "drip-bags", name: "Drip Bag Pack", price: 250, unit: "box of 5",
       desc: "Tear, hang on your cup, pour hot water. Good coffee at the office or on the road.",
-      notes: ["No equipment", "Travel friendly"], color: "#2f5d4a"
+      notes: ["No equipment", "Travel friendly"], color: "#8ea5f3"
     }
   ],
 

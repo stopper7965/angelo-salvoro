@@ -55,10 +55,10 @@
 
   function bagSVG(bean) {
     return '<svg class="bag" viewBox="0 0 100 130" aria-hidden="true">' +
-      '<path d="M22 20 L78 20 L84 122 Q84 126 80 126 L20 126 Q16 126 16 122 Z" fill="' + bean.color + '"/>' +
-      '<path d="M22 20 L78 20 L76 32 L24 32 Z" fill="#000" fill-opacity=".18"/>' +
-      '<rect x="28" y="56" width="44" height="40" rx="6" fill="var(--paper)"/>' +
-      '<path d="M50 62c2.5 4 2.5 8 0 12s-2.5 8 0 12c-6-2.5-8.5-7-8.5-12s2.5-9.5 8.5-12z" fill="' + bean.color + '"/>' +
+      '<path d="M22 18 L78 18 L84 120 Q84 126 78 126 L22 126 Q16 126 16 120 Z" fill="' + bean.color + '"/>' +
+      '<path d="M22 18 L78 18 L77 30 L23 30 Z" fill="#000" fill-opacity=".2"/>' +
+      '<rect x="17" y="62" width="66" height="26" fill="#ff7f42"/>' +
+      '<text x="50" y="80" text-anchor="middle" font-family="Outfit, sans-serif" font-weight="500" font-size="15" fill="#fff">mystika</text>' +
       '</svg>';
   }
 
@@ -259,20 +259,29 @@
       '<div class="card-top"><h3>' + esc(item.name) + '</h3><span class="price">' + money(item.price) + "</span></div>" +
       '<p class="desc">' + esc(item.desc) + "</p>" +
       '<div class="card-actions">' + optionToggle(item) +
-      '<button class="btn btn-add" type="button" data-add="' + item.id + '">Add</button></div>' +
+      '<button class="btn btn-ink btn-add" type="button" data-add="' + item.id + '">Add</button></div>' +
       "</div></article>";
   }
 
-  function renderHero() {
-    var picks = D.menu.filter(function (m) { return m.bestseller; }).slice(0, 5);
-    $("[data-hero-shelf]").innerHTML = '<div class="shelf">' + picks.map(function (m, i) {
-      return '<div class="shelf-item" style="--d:' + i + '">' + drinkSVG(m, { animate: true }) + "<span>" + esc(m.name) + "</span></div>";
-    }).join("") + "</div>";
+  function bestCard(item) {
+    return '<article class="card-best" data-product="' + item.id + '">' +
+      '<div class="art">' + drinkSVG(item) + "</div>" +
+      "<h3>" + esc(item.name) + "</h3>" +
+      '<p class="desc">' + esc(item.desc) + "</p>" +
+      optionToggle(item) +
+      '<div class="best-foot"><span class="price">' + money(item.price) + "</span>" +
+      '<button class="btn btn-ink btn-add" type="button" data-add="' + item.id + '">Add to order</button></div>' +
+      "</article>";
+  }
+
+  function renderBento() {
+    $("[data-bento-thumbs]").innerHTML = D.menu.filter(function (m) { return m.bestseller; }).slice(0, 4)
+      .map(function (m) { return "<li>" + drinkSVG(m) + "<span>" + esc(m.name) + "</span></li>"; }).join("");
+    $("[data-bento-bag]").innerHTML = bagSVG(D.beans[0]);
   }
 
   function renderBestsellers() {
-    $("[data-bestsellers]").innerHTML = D.menu.filter(function (m) { return m.bestseller; })
-      .map(function (m) { return productCard(m, "card card-best"); }).join("");
+    $("[data-bestsellers]").innerHTML = D.menu.filter(function (m) { return m.bestseller; }).map(bestCard).join("");
   }
 
   var activeCat = D.categories[0].id;
@@ -294,10 +303,9 @@
       return '<article class="bean" data-product="' + b.id + '">' +
         '<div class="art">' + bagSVG(b) + "</div>" +
         '<div class="card-body"><div class="card-top"><h3>' + esc(b.name) + '</h3><span class="price">' + money(b.price) + "</span></div>" +
-        '<p class="unit">' + esc(b.unit) + "</p>" +
         '<p class="desc">' + esc(b.desc) + "</p>" +
         '<ul class="notes">' + b.notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul>" +
-        '<button class="btn btn-add" type="button" data-add="' + b.id + '">Add to order</button></div></article>';
+        '<div class="best-foot"><span class="unit">' + esc(b.unit) + '</span><button class="btn btn-ink btn-add" type="button" data-add="' + b.id + '">Add to order</button></div></div></article>';
     }).join("");
   }
 
@@ -311,7 +319,7 @@
           '<p class="desc">' + esc(s.desc) + "</p>" +
           '<p class="who">' + esc(s.who) + "</p>" +
           '<div class="service-foot"><span class="price">' + (s.price ? money(s.price) : esc(s.priceLabel)) + "</span>" +
-          '<button class="btn btn-primary" type="button" data-book="' + s.id + '">Book this</button></div></article>';
+          '<button class="btn btn-ink" type="button" data-book="' + s.id + '">Book this</button></div></article>';
       }).join("");
     });
   }
@@ -474,7 +482,7 @@
 
   /* ---------- Boot ---------- */
 
-  renderHero();
+  renderBento();
   renderBestsellers();
   renderMenu();
   renderBeans();

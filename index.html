@@ -75,9 +75,9 @@
 
   <a class="skip" href="#main">Skip to content</a>
 
-  <div class="statusbar" role="status">
-    <span class="status-dot" data-open-dot></span>
-    <span data-open-text>Open daily 9 AM to 10 PM</span>
+  <div class="statusbar">
+    <span class="status-dot" data-open-dot aria-hidden="true"></span>
+    <span data-open-text role="status">Open daily 9 AM to 10 PM</span>
     <a href="#visit" class="statusbar-link">Stall 1, Valencia Food Plaza</a>
   </div>
 
@@ -258,7 +258,7 @@
       <div class="wrap visit-grid">
         <div class="visit-info">
           <h2 id="visit-h">Come say hi</h2>
-          <p class="visit-status"><span class="status-dot" data-open-dot></span> <span data-open-text>Open daily 9 AM to 10 PM</span></p>
+          <p class="visit-status"><span class="status-dot" data-open-dot aria-hidden="true"></span> <span data-open-text>Open daily 9 AM to 10 PM</span></p>
           <dl class="facts">
             <div><dt>Where</dt><dd data-address></dd></div>
             <div><dt>Hours</dt><dd>Every day, 9 AM to 10 PM</dd></div>
@@ -334,7 +334,7 @@
   <!-- Cart drawer -->
   <div class="drawer" data-cart hidden>
     <div class="drawer-backdrop" data-close-cart></div>
-    <aside class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="cart-h">
+    <div class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="cart-h">
       <div class="drawer-head">
         <h2 id="cart-h">Your order</h2>
         <button class="icon-btn" type="button" data-close-cart aria-label="Close your order">
@@ -351,11 +351,13 @@
         <form class="cart-form" data-cart-form novalidate>
           <div class="field">
             <label for="c-name">Your name</label>
-            <input id="c-name" name="name" autocomplete="given-name" required>
+            <input id="c-name" name="name" autocomplete="given-name" required aria-describedby="c-name-err">
+            <p class="field-error" id="c-name-err" hidden></p>
           </div>
           <div class="field">
             <label for="c-time">Pickup time</label>
-            <select id="c-time" name="time" required data-pickup-times></select>
+            <select id="c-time" name="time" required data-pickup-times aria-describedby="c-time-err"></select>
+            <p class="field-error" id="c-time-err" hidden></p>
           </div>
           <div class="field">
             <label for="c-notes">Notes <span class="optional">(optional)</span></label>
@@ -371,7 +373,7 @@
           <button class="btn btn-outline btn-block" type="button" data-send="messenger">Send on Messenger</button>
         </div>
       </div>
-    </aside>
+    </div>
   </div>
 
   <!-- Booking dialog -->
@@ -391,28 +393,32 @@
         <div class="field-row">
           <div class="field">
             <label for="b-date">Preferred date</label>
-            <input id="b-date" name="date" type="date" required>
+            <input id="b-date" name="date" type="date" required aria-describedby="b-date-err">
+            <p class="field-error" id="b-date-err" hidden></p>
           </div>
           <div class="field">
             <label for="b-pax">People</label>
-            <input id="b-pax" name="pax" type="number" min="1" value="1" inputmode="numeric" required>
+            <input id="b-pax" name="pax" type="number" min="1" value="1" inputmode="numeric" required aria-describedby="b-pax-err">
+            <p class="field-error" id="b-pax-err" hidden></p>
           </div>
         </div>
         <div class="field-row">
           <div class="field">
             <label for="b-name">Your name</label>
-            <input id="b-name" name="name" autocomplete="name" required>
+            <input id="b-name" name="name" autocomplete="name" required aria-describedby="b-name-err">
+            <p class="field-error" id="b-name-err" hidden></p>
           </div>
           <div class="field">
             <label for="b-phone">Mobile number</label>
-            <input id="b-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="09XX XXX XXXX" required>
+            <input id="b-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="b-phone-hint b-phone-err">
+            <p class="field-hint" id="b-phone-hint">11 digits, like 0917 123 4567</p>
+            <p class="field-error" id="b-phone-err" hidden></p>
           </div>
         </div>
         <div class="field">
           <label for="b-notes">Anything we should know? <span class="optional">(optional)</span></label>
           <textarea id="b-notes" name="notes" rows="3" placeholder="Venue, event type, machine brand, your cafe idea"></textarea>
         </div>
-        <p class="form-error" data-booking-error role="alert" hidden></p>
       </div>
       <div class="drawer-foot">
         <p class="pay-note">No payment now. We reply within the day to confirm your slot.</p>
@@ -424,7 +430,7 @@
     </form>
   </dialog>
 
-  <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+  <div class="toast" data-toast role="status" aria-live="polite"></div>
 
   <script src="assets/js/catalog.js"></script>
   <script src="assets/js/app.js"></script>

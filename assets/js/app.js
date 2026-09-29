@@ -46,7 +46,7 @@
         '<rect x="51" y="' + (iy + 12) + '" width="14" height="14" rx="3" transform="rotate(14 58 ' + (iy + 19) + ')"/>' +
         '<rect x="40" y="' + (iy + 24) + '" width="13" height="13" rx="3" transform="rotate(6 46 ' + (iy + 30) + ')"/></g>';
     }
-    return '<svg class="drink' + (opts.animate ? " animate" : "") + '" viewBox="0 0 100 130" role="img" aria-label="' + esc(item.name) + '">' +
+    return '<svg class="drink' + (opts.animate ? " animate" : "") + '" viewBox="0 0 100 130" aria-hidden="true" focusable="false">' +
       '<defs><clipPath id="' + id + '"><path d="' + cup[0] + '"/></clipPath></defs>' +
       '<g clip-path="url(#' + id + ')">' + rects + ice + '</g>' +
       '<path d="' + cup[1] + '" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>' +
@@ -54,7 +54,7 @@
   }
 
   function bagSVG(bean) {
-    return '<svg class="bag" viewBox="0 0 100 130" aria-hidden="true">' +
+    return '<svg class="bag" viewBox="0 0 100 130" aria-hidden="true" focusable="false">' +
       '<path d="M22 18 L78 18 L84 120 Q84 126 78 126 L22 126 Q16 126 16 120 Z" fill="' + bean.color + '"/>' +
       '<path d="M22 18 L78 18 L77 30 L23 30 Z" fill="#000" fill-opacity=".2"/>' +
       '<rect x="17" y="62" width="66" height="26" fill="#ff7f42"/>' +
@@ -156,6 +156,9 @@
   function renderCart() {
     var count = cart.reduce(function (s, l) { return s + l.qty; }, 0);
     $$("[data-cart-count]").forEach(function (el) { el.textContent = count; el.hidden = count === 0; });
+    $$("button[data-open-cart]").forEach(function (b) {
+      b.setAttribute("aria-label", "Your order, " + count + (count === 1 ? " item" : " items"));
+    });
     var list = $("[data-cart-lines]");
     list.innerHTML = cart.map(function (l) {
       var p = findProduct(l.id);
@@ -164,9 +167,9 @@
         '<div class="cart-line-info"><p class="cart-line-name">' + esc(p.name) + '</p>' +
         '<p class="cart-line-meta">' + (l.option ? esc(l.option) + ", " : "") + money(p.price) + ' each</p></div>' +
         '<div class="qty" role="group" aria-label="Quantity of ' + esc(p.name) + '">' +
-        '<button type="button" data-qty="-1" data-key="' + esc(l.key) + '" aria-label="One less">−</button>' +
-        '<span>' + l.qty + '</span>' +
-        '<button type="button" data-qty="1" data-key="' + esc(l.key) + '" aria-label="One more">+</button></div>' +
+        '<button type="button" data-qty="-1" data-key="' + esc(l.key) + '" aria-label="' + (l.qty === 1 ? "Remove " : "One less ") + esc(p.name) + '">−</button>' +
+        '<span aria-live="polite">' + l.qty + '</span>' +
+        '<button type="button" data-qty="1" data-key="' + esc(l.key) + '" aria-label="One more ' + esc(p.name) + '">+</button></div>' +
         '</li>';
     }).join("");
     var empty = cart.length === 0;
@@ -177,6 +180,13 @@
   }
 
   var lastFocus = null;
+  function setBackgroundInert(on) {
+    $$("body > a.skip, body > .statusbar, body > .site-header, body > main, body > footer, body > .actionbar").forEach(function (el) {
+      if (on) { el.setAttribute("inert", ""); el.setAttribute("aria-hidden", "true"); }
+      else { el.removeAttribute("inert"); el.removeAttribute("aria-hidden"); }
+    });
+  }
+
   function openCart() {
     lastFocus = document.activeElement;
     var sel = $("[data-pickup-times]");
@@ -185,7 +195,8 @@
     if (prev) sel.value = prev;
     var name = store.get("mystika-name", "");
     if (name && !$("#c-name").value) $("#c-name").value = name;
-    $("[data-toast]").hidden = true;
+    hideToast();
+    setBackgroundInert(true);
     $("[data-cart]").hidden = false;
     document.body.classList.add("locked");
     requestAnimationFrame(function () { $("[data-cart]").classList.add("open"); });
@@ -196,6 +207,7 @@
     var el = $("[data-cart]");
     el.classList.remove("open");
     document.body.classList.remove("locked");
+    setBackgroundInert(false);
     setTimeout(function () { el.hidden = true; }, 220);
     if (lastFocus) lastFocus.focus({ preventScroll: true });
   }
@@ -215,40 +227,55 @@
 
   /* ---------- Sending (SMS or Messenger, no backend needed) ---------- */
 
+  var isPhone = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+
   function send(channel, message) {
     if (channel === "sms") {
+      toast(isPhone
+        ? "Opening your messages app with everything written. Press send there."
+        : "Texting works best from a phone. If nothing opened, use Send on Messenger or call " + B.phoneDisplay + ".", null, null, 6000);
       window.location.href = "sms:" + B.phone + "?body=" + encodeURIComponent(message);
       return;
     }
     var open = function () { window.open(B.messenger, "_blank", "noopener"); };
+    var failed = function () {
+      toast("Messenger is opening. Type your order there, or use Send by text instead.", null, null, 6000);
+      open();
+    };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(message).then(function () {
-        toast("Message copied. Paste it in the Messenger chat and hit send.");
+        toast("Message copied. Paste it in the Messenger chat and press send.", null, null, 6000);
         open();
-      }, open);
+      }, failed);
     } else {
-      open();
+      failed();
     }
   }
 
   /* ---------- Toast ---------- */
 
   var toastTimer;
-  function toast(text, actionLabel, action) {
+  function hideToast() {
     var t = $("[data-toast]");
-    t.innerHTML = "<span>" + esc(text) + "</span>" + (actionLabel ? '<button type="button">' + esc(actionLabel) + "</button>" : "");
-    if (actionLabel) $("button", t).addEventListener("click", function () { t.hidden = true; action(); });
-    t.hidden = false;
+    t.classList.remove("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.hidden = true; }, 4200);
+    toastTimer = setTimeout(function () { t.innerHTML = ""; }, 200);
+  }
+  function toast(text, actionLabel, action, ms) {
+    var t = $("[data-toast]");
+    clearTimeout(toastTimer);
+    t.innerHTML = "<span>" + esc(text) + "</span>" + (actionLabel ? '<button type="button">' + esc(actionLabel) + "</button>" : "");
+    if (actionLabel) $("button", t).addEventListener("click", function () { hideToast(); action(); });
+    t.classList.add("show");
+    toastTimer = setTimeout(hideToast, ms || 5000);
   }
 
   /* ---------- Render sections ---------- */
 
   function optionToggle(item) {
     if (!item.options || item.options.length < 2) return "";
-    return '<div class="seg" role="radiogroup" aria-label="Hot or iced">' + item.options.map(function (o, i) {
-      return '<button type="button" role="radio" aria-checked="' + (i === 0) + '" data-opt="' + esc(o) + '">' + esc(o) + "</button>";
+    return '<div class="seg" role="radiogroup" aria-label="' + esc(item.name) + ', hot or iced">' + item.options.map(function (o, i) {
+      return '<button type="button" role="radio" aria-checked="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-opt="' + esc(o) + '">' + esc(o) + "</button>";
     }).join("") + "</div>";
   }
 
@@ -332,7 +359,7 @@
 
   function renderReviews() {
     $("[data-reviews]").innerHTML = D.reviews.map(function (r) {
-      return '<figure class="review"><div class="stars" aria-label="5 out of 5 stars">★★★★★</div>' +
+      return '<figure class="review"><div class="stars" role="img" aria-label="Rated 5 out of 5">★★★★★</div>' +
         "<blockquote>" + esc(r.text) + "</blockquote><figcaption>" + esc(r.who) + "</figcaption></figure>";
     }).join("");
   }
@@ -347,6 +374,9 @@
       directions: "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(B.mapsQuery)
     };
     $$("[data-link]").forEach(function (a) { a.href = links[a.getAttribute("data-link")]; });
+    $$('a[target="_blank"]').forEach(function (a) {
+      if (!$(".sr-only", a)) a.insertAdjacentHTML("beforeend", '<span class="sr-only"> (opens in a new tab)</span>');
+    });
     $$("[data-address]").forEach(function (el) { el.textContent = B.address; });
     $$("[data-phone-display]").forEach(function (el) { el.textContent = B.phoneDisplay; });
     $$("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
@@ -375,7 +405,8 @@
     var saved = store.get("mystika-contact", {});
     if (saved.name && !$("#b-name").value) $("#b-name").value = saved.name;
     if (saved.phone && !$("#b-phone").value) $("#b-phone").value = saved.phone;
-    $("[data-booking-error]").hidden = true;
+    $$(".field-error", dialog).forEach(function (e) { e.hidden = true; });
+    $$("[aria-invalid]", dialog).forEach(function (e) { e.removeAttribute("aria-invalid"); });
     if (dialog.showModal) dialog.showModal(); else dialog.setAttribute("open", "");
   }
 
@@ -395,18 +426,47 @@
     return msg;
   }
 
+  var MESSAGES = {
+    name: "Add your name so we know who it is for.",
+    time: "Choose a pickup time.",
+    date: "Pick the date you would like.",
+    pax: "Enter how many people are coming, 1 or more.",
+    phone: "Enter your mobile number with 11 digits, like 0917 123 4567."
+  };
+
+  function checkField(el) {
+    var v = el.value.trim();
+    var ok = v !== "" && el.checkValidity();
+    if (el.name === "phone") {
+      var digits = v.replace(/\D/g, "");
+      ok = ok && digits.length >= 10 && digits.length <= 12;
+    }
+    if (el.name === "date" && ok && el.min) ok = v >= el.min;
+    var err = document.getElementById(el.id + "-err");
+    el.setAttribute("aria-invalid", String(!ok));
+    if (err) {
+      err.textContent = ok ? "" : MESSAGES[el.name];
+      err.hidden = ok;
+    }
+    return ok;
+  }
+
   function validate(form, fields) {
+    form.setAttribute("data-tried", "");
     var bad = null;
     fields.forEach(function (n) {
-      var el = form[n];
-      var ok = el.value.trim() !== "" && el.checkValidity();
-      if (n === "phone") ok = ok && el.value.replace(/\D/g, "").length >= 10;
-      el.setAttribute("aria-invalid", String(!ok));
-      if (!ok && !bad) bad = el;
+      if (!checkField(form[n]) && !bad) bad = form[n];
     });
     if (bad) bad.focus();
     return !bad;
   }
+
+  // Once someone has tried to send, re-check each field as they leave it
+  document.addEventListener("focusout", function (e) {
+    var el = e.target;
+    var form = el.form;
+    if (form && form.hasAttribute("data-tried") && MESSAGES[el.name]) checkField(el);
+  });
 
   /* ---------- Events ---------- */
 
@@ -414,10 +474,7 @@
     var t = e.target.closest("button, a");
     if (!t) return;
 
-    if (t.hasAttribute("data-opt")) {
-      $$("[data-opt]", t.parentNode).forEach(function (b) { b.setAttribute("aria-checked", String(b === t)); });
-      return;
-    }
+    if (t.hasAttribute("data-opt")) { selectOption(t); return; }
     if (t.hasAttribute("data-add")) {
       var card = t.closest("[data-product]");
       var chosen = card && $('[aria-checked="true"]', card);
@@ -435,9 +492,22 @@
     if (t.hasAttribute("data-close-cart")) { closeCart(); return; }
     if (t.hasAttribute("data-qty")) {
       var key = t.getAttribute("data-key");
-      cart.forEach(function (l) { if (l.key === key) l.qty += Number(t.getAttribute("data-qty")); });
+      var dir = t.getAttribute("data-qty");
+      var before = cart.map(function (l) { return Object.assign({}, l); });
+      var removed = null;
+      cart.forEach(function (l) { if (l.key === key) { l.qty += Number(dir); if (l.qty <= 0) removed = l; } });
       cart = cart.filter(function (l) { return l.qty > 0; });
       saveCart();
+      var same = $('[data-key="' + key.replace(/"/g, '\\"') + '"][data-qty="' + dir + '"]');
+      if (same) same.focus();
+      else $(".drawer-panel .icon-btn").focus();
+      if (removed) {
+        toast(findProduct(removed.id).name + " removed.", "Undo", function () {
+          cart = before; saveCart();
+          var back = $('[data-key="' + key.replace(/"/g, '\\"') + '"][data-qty="-1"]');
+          if (back) back.focus();
+        });
+      }
       return;
     }
     if (t.hasAttribute("data-send")) {
@@ -450,12 +520,7 @@
     if (t.hasAttribute("data-book")) { openBooking(t.getAttribute("data-book")); return; }
     if (t.hasAttribute("data-book-send")) {
       var bf = $("[data-booking-form]");
-      if (!validate(bf, ["date", "pax", "name", "phone"])) {
-        var err = $("[data-booking-error]");
-        err.textContent = "Add a date, number of people, your name and a 10 or 11 digit mobile number so we can confirm.";
-        err.hidden = false;
-        return;
-      }
+      if (!validate(bf, ["date", "pax", "name", "phone"])) return;
       store.set("mystika-contact", { name: bf.name.value.trim(), phone: bf.phone.value.trim() });
       send(t.getAttribute("data-book-send"), bookingMessage(bf));
       return;
@@ -466,12 +531,37 @@
 
   // Arrow key navigation for menu tabs
   $("[data-tabs]").addEventListener("keydown", function (e) {
-    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
     var ids = D.categories.map(function (c) { return c.id; });
-    var i = ids.indexOf(activeCat) + (e.key === "ArrowRight" ? 1 : -1);
+    var i = ids.indexOf(activeCat);
+    if (e.key === "ArrowRight") i += 1;
+    else if (e.key === "ArrowLeft") i -= 1;
+    else if (e.key === "Home") i = 0;
+    else if (e.key === "End") i = ids.length - 1;
+    else return;
+    e.preventDefault();
     activeCat = ids[(i + ids.length) % ids.length];
     renderMenu();
     $('[data-tab="' + activeCat + '"]').focus();
+  });
+
+  function selectOption(btn) {
+    $$("[data-opt]", btn.parentNode).forEach(function (b) {
+      var on = b === btn;
+      b.setAttribute("aria-checked", String(on));
+      b.tabIndex = on ? 0 : -1;
+    });
+  }
+
+  document.addEventListener("keydown", function (e) {
+    var t = e.target;
+    if (!t.hasAttribute || !t.hasAttribute("data-opt")) return;
+    var keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+    if (!(e.key in keys)) return;
+    e.preventDefault();
+    var all = $$("[data-opt]", t.parentNode);
+    var next = all[(all.indexOf(t) + keys[e.key] + all.length) % all.length];
+    selectOption(next);
+    next.focus();
   });
 
   document.addEventListener("keydown", function (e) {
@@ -493,4 +583,27 @@
   renderCart();
   renderStatus();
   setInterval(renderStatus, 60000);
+
+  // A link like cafemystika.com/#book-brewing-101 opens that booking form
+  function bookFromHash() {
+    var m = /^#book-(.+)$/.exec(location.hash);
+    if (m && D.services.some(function (s) { return s.id === m[1]; })) openBooking(m[1]);
+  }
+  bookFromHash();
+  window.addEventListener("hashchange", bookFromHash);
+
+  // Highlight the nav link for the section on screen
+  if ("IntersectionObserver" in window) {
+    var navLinks = $$(".nav a");
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        navLinks.forEach(function (a) {
+          if (a.getAttribute("href") === "#" + en.target.id) a.setAttribute("aria-current", "location");
+          else a.removeAttribute("aria-current");
+        });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    navLinks.forEach(function (a) { var sec = $(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
 })();

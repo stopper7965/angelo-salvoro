@@ -52,8 +52,8 @@
     return '<svg class="bag" viewBox="0 0 100 130" aria-hidden="true" focusable="false">' +
       '<path d="M22 18 L78 18 L84 120 Q84 126 78 126 L22 126 Q16 126 16 120 Z" fill="' + bean.color + '"/>' +
       '<path d="M22 18 L78 18 L77 30 L23 30 Z" fill="#000" fill-opacity=".2"/>' +
-      '<rect x="17" y="62" width="66" height="26" fill="#ff7f42"/>' +
-      '<text x="50" y="80" text-anchor="middle" font-family="Outfit, sans-serif" font-weight="500" font-size="15" fill="#fff">mystika</text>' +
+      '<rect x="17" y="62" width="66" height="26" fill="#e2ae2a"/>' +
+      '<text x="50" y="80" text-anchor="middle" font-family="DM Sans, sans-serif" font-weight="700" font-size="15" fill="#0a0a0a">mystika</text>' +
       '</svg>';
   }
 
@@ -61,8 +61,8 @@
     return '<svg class="bag" viewBox="0 0 100 130" aria-hidden="true" focusable="false">' +
       '<rect x="40" y="8" width="20" height="12" rx="3" fill="#1c1c22"/>' +
       '<path d="M42 20h16v10q14 8 14 24v62q0 8-8 8H36q-8 0-8-8V54q0-16 14-24z" fill="#efe3cf" stroke="#1c1c22" stroke-width="3"/>' +
-      '<rect x="29" y="62" width="42" height="34" fill="#ff7f42"/>' +
-      '<text x="50" y="84" text-anchor="middle" font-family="Outfit, sans-serif" font-weight="600" font-size="15" fill="#fff">WCB</text>' +
+      '<rect x="29" y="62" width="42" height="34" fill="#e2ae2a"/>' +
+      '<text x="50" y="84" text-anchor="middle" font-family="DM Sans, sans-serif" font-weight="700" font-size="15" fill="#0a0a0a">WCB</text>' +
       '</svg>';
   }
 
@@ -499,6 +499,7 @@
 
   /* ---------- Boot ---------- */
 
+  MK.renderAnnouncements(D.announcements);
   renderBento();
   renderBestsellers();
   renderMenu();
@@ -511,6 +512,47 @@
   renderCart();
   renderStatus();
   setInterval(renderStatus, 60000);
+
+  /* ---------- Exit offer: once per visitor, only when enabled (or previewed) ---------- */
+  (function exitOffer() {
+    var W = D.welcomeOffer, dlg = $("[data-exit]");
+    var preview = /[?&]preview-offer\b/.test(location.search);
+    if (!W || !dlg || !(W.enabled || preview)) return;
+    if (!preview && store.get("mystika-exit-shown", false)) return;
+    $("[data-exit-kicker]").textContent = W.kicker;
+    $("[data-exit-headline]").textContent = W.headline;
+    $("[data-exit-text]").textContent = W.text;
+    $("[data-exit-code]").textContent = W.code;
+    $("[data-exit-fine]").textContent = W.fine;
+    var armed = false, shown = false;
+    function busy() { return !$("[data-cart]").hidden || (dialog && dialog.open); }
+    function show() {
+      if (shown || busy()) return;
+      shown = true;
+      store.set("mystika-exit-shown", true);
+      if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+    }
+    setTimeout(function () { armed = true; if (preview) show(); }, preview ? 300 : 8000);
+    // Desktop: pointer leaves through the top of the window
+    document.addEventListener("mouseout", function (e) { if (armed && !e.relatedTarget && e.clientY <= 0) show(); });
+    // Phones: after 45 seconds of reading
+    if (MK.isPhone) setTimeout(function () { if (document.visibilityState === "visible") show(); }, 45000);
+    function close() { dlg.close(); }
+    $("[data-exit-close]").addEventListener("click", close);
+    dlg.addEventListener("click", function (e) { if (e.target === dlg) close(); });
+    $("[data-exit-copy]").addEventListener("click", function () {
+      var btn = this;
+      var done = function () { btn.textContent = "Copied"; toast("Code " + W.code + " copied."); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(W.code).then(done, done); else done();
+    });
+    $("[data-exit-use]").addEventListener("click", function () {
+      var notes = $("#c-notes");
+      if (notes.value.indexOf(W.code) === -1) notes.value = (notes.value ? notes.value + ". " : "") + "Code " + W.code;
+      close();
+      $("#bestsellers").scrollIntoView();
+      toast("Code " + W.code + " added to your order notes. Pick your drinks.");
+    });
+  })();
 
   // A link like cafemystika.com/#book-brewing-101 opens that booking form
   function bookFromHash() {

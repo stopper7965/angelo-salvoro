@@ -33,6 +33,28 @@ window.MYSTIKA = {
     currency: "₱"
   },
 
+  // Scrolling announcement bar at the very top. status: true shows the live open or closed text.
+  announcements: [
+    { status: true, text: "Open daily 9 AM to 10 PM" },
+    { text: "Order ahead and skip the line.", href: "#bestsellers", link: "Order now" },
+    { text: "Whole cakes from ₱1,250.", href: "#cakes", link: "See cakes" },
+    { text: "Courses from ₱2,500, pay in three parts above ₱7,000.", href: "#book", link: "See courses" },
+    { text: "Luzuriaga Street, South Poblacion, Valencia.", href: "#visit", link: "Directions" },
+    { text: "Run a cafe, hotel or event?", href: "trade.html", link: "Trade prices" }
+  ],
+
+  // "Before you go" offer, shown once per visitor when they move to leave the page.
+  // Switched OFF until you decide the offer. Set enabled: true to turn it on.
+  // Preview it any time by opening the site with ?preview-offer at the end of the address.
+  welcomeOffer: {
+    enabled: false,                                                       // CONFIRM before switching on
+    kicker: "Before you go",
+    headline: "10% off your first pickup order",
+    text: "Show this code at the counter, or tap below and we add it to your order for you.",
+    code: "MYSTIKA10",
+    fine: "One time use, first order only, walk in drinks and beans."
+  },
+
   // Menu categories, in the order they appear on the page
   categories: [
     { id: "signature", name: "Signatures" },
@@ -145,22 +167,22 @@ window.MYSTIKA = {
     {
       id: "bean-benguet-1kg", name: "Benguet", brand: "Bold Side Coffee Co.", price: 1200, unit: "1 kg bag",
       desc: "100% Benguet arabica from the Cordillera. Our house special, great as filter or black.",
-      notes: ["Single origin", "Philippine arabica"], color: "#1c1c22"
+      notes: ["Single origin", "Philippine arabica"], color: "#111111"
     },
     {
       id: "bean-brusko-1kg", name: "Brusko", brand: "Bold Side Coffee Co.", price: 1150, unit: "1 kg bag",
       desc: "Batangas barako, liberica and excelsa. Strong, bold, proudly local.",
-      notes: ["Kapeng barako", "Strong black"], color: "#214dd1"
+      notes: ["Kapeng barako", "Strong black"], color: "#3a3a38"
     },
     {
       id: "bean-first-light-1kg", name: "First Light", brand: "Bold Side Coffee Co.", price: 1107, unit: "1 kg bag",
       desc: "90 arabica, 10 robusta. Made for lattes and milk drinks at home.",
-      notes: ["Espresso", "Milk drinks"], color: "#8ea5f3"
+      notes: ["Espresso", "Milk drinks"], color: "#6e6e69"
     },
     {
       id: "specialty-200g", name: "Specialty single origin", brand: "Bold Side Coffee Co.", price: 870, unit: "200 g bag",
       desc: "A rotating single lot, roasted in small batches. Roast date and cupping notes on every bag.",
-      notes: ["Current lot", "Filter or espresso"], color: "#ff7f42"
+      notes: ["Current lot", "Filter or espresso"], color: "#111111"
     },
     {
       id: "wcb", name: "WCB White Cold Brew", brand: "Bold Side Coffee Co.", price: 170, unit: "250 ml bottle",

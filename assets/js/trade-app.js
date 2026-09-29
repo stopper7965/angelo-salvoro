@@ -191,7 +191,7 @@
 
   function renderSections() {
     $("[data-sections]").innerHTML = T.sections.map(function (sec, i) {
-      return '<section class="section tsec' + (i % 2 ? " section-soft" : "") + '" id="' + sec.id + '" aria-labelledby="' + sec.id + '-h">' +
+      return '<section class="section tsec' + (i % 2 ? " theme-dark" : " theme-light") + '" id="' + sec.id + '" aria-labelledby="' + sec.id + '-h">' +
         '<div class="wrap"><div class="section-head"><p class="tsec-brand">' + esc(sec.brand) + '</p><h2 id="' + sec.id + '-h">' + esc(sec.title) + "</h2>" +
         "<p>" + esc(sec.intro) + "</p></div>" +
         (sec.note ? '<p class="callout">' + esc(sec.note) + "</p>" : "") +
@@ -460,6 +460,7 @@
   renderAudience();
   if (m) { var forSec = $("#for"); if (forSec) forSec.scrollIntoView(); }
   renderQuote();
+  MK.renderAnnouncements(T.announcements);
   MK.renderLinks(B);
   if (/^#quote$/.test(location.hash)) openQuote();
 

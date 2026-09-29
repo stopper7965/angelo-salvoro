@@ -146,7 +146,36 @@
     $$("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
   }
 
+  /* ---------- Announcement bar: scrolls slowly, pauses on hover, focus or button ---------- */
+  function renderAnnouncements(items) {
+    var bar = $("[data-announce]");
+    if (!bar || !items || !items.length) return;
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var list = function (hidden) {
+      return '<ul class="announce-list"' + (hidden ? ' aria-hidden="true"' : "") + ">" + items.map(function (it) {
+        var inner = it.status
+          ? '<span class="status-dot" data-open-dot aria-hidden="true"></span><span data-open-text>' + esc(it.text) + "</span>"
+          : "<span>" + esc(it.text) + "</span>";
+        if (it.href) inner += ' <a href="' + esc(it.href) + '"' + (hidden ? ' tabindex="-1"' : "") + ">" + esc(it.link) + "</a>";
+        return "<li>" + inner + "</li>";
+      }).join("") + "</ul>";
+    };
+    bar.innerHTML = '<div class="announce-viewport"><div class="announce-track">' + list(false) + (reduced ? "" : list(true)) + "</div></div>" +
+      (reduced ? "" : '<button class="announce-pause" type="button" aria-pressed="false" aria-label="Pause announcements">' +
+        '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></button>');
+    var btn = $(".announce-pause", bar);
+    if (btn) btn.addEventListener("click", function () {
+      var paused = bar.classList.toggle("paused");
+      btn.setAttribute("aria-pressed", String(paused));
+      btn.setAttribute("aria-label", paused ? "Play announcements" : "Pause announcements");
+      btn.innerHTML = paused
+        ? '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>'
+        : '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
+    });
+  }
+
   window.MK = {
+    renderAnnouncements: renderAnnouncements,
     $: $, $$: $$, esc: esc, money: money, store: store,
     toast: toast, hideToast: hideToast, send: send, isPhone: isPhone,
     setBackgroundInert: setBackgroundInert,

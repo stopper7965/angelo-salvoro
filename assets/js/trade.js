@@ -20,6 +20,15 @@ window.MYSTIKA_TRADE = {
   validity: "Prices effective 1 September 2026, valid to 31 December 2026, unless a written quotation says otherwise.",
   installments: "Anything above PHP 7,000 can be split into three payments at no interest and no added fee.",
 
+  announcements: [
+    { text: "Written quote the same day.", href: "sms:+639352158822", link: "Text 0935 215 8822" },
+    { text: "Installments on anything above PHP 7,000, no interest, no added fee." },
+    { text: "Free delivery in Valencia and Dumaguete from 10 kg." },
+    { text: "Public batch courses cost 25 percent less than the closed rate.", href: "#training", link: "See courses" },
+    { text: "Serving Negros Oriental, Siquijor, Bohol and Dipolog." },
+    { text: "Prices valid to 31 December 2026." }
+  ],
+
   credentials: [
     "TESDA National TVET Trainer and Assessor, NTTC holder",
     "NTTC in Food and Beverage Services, Barista and Bartending",

@@ -33,6 +33,12 @@ Search the file for `CONFIRM`. Those lines were filled in from public reviews or
 
 To use a real photo for a drink instead of the drawn glass, save the photo in `assets/img/` and add `image: "assets/img/spanish-latte.jpg"` to that drink.
 
+The scrolling bar at the top of each page comes from `announcements` in `catalog.js` (home) and `trade.js` (For business).
+
+The "Before you go" discount popup is in `welcomeOffer` in `catalog.js`. It is **off** until you set `enabled: true`. To see it without switching it on, open the site with `?preview-offer` at the end of the address. Only switch it on once your staff know the code.
+
+The look follows `design-system/cafe-mystika/MASTER.md`: 60 percent black, 30 percent white, 10 percent mustard gold.
+
 ## How orders and bookings reach you
 
 There is no checkout server. When a customer taps **Send order by text**, their phone opens a text message to the number in `business.phone` with the full order already written (items, total, name, pickup time, notes). **Send on Messenger** copies the same message and opens your Facebook page chat. Payment is at the counter.
@@ -53,7 +59,8 @@ To preview on your computer: open a terminal in this folder, run `python3 -m htt
 
 ```
 index.html              page structure, SEO and Google business data
-assets/css/styles.css   design (colours at the top)
+assets/css/styles.css   design, colour tokens at the top
+design-system/          the design rules every page follows
 trade.html              For business page
 assets/js/catalog.js    home page products, services, prices and contact info
 assets/js/trade.js      every trade price from the 2026 catalogues

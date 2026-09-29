@@ -1,12 +1,14 @@
 /*
   CAFE MYSTIKA CATALOGUE
   ----------------------
-  This is the only file you need to edit to change the menu, beans,
-  services, prices, hours and contact details. No coding knowledge needed:
-  change the text between the quotes and the numbers, save, and upload.
+  This file holds everything on the home page: the cafe menu, beans, cakes,
+  courses, hours and contact details. Trade prices for the "For business"
+  page live in trade.js. No coding knowledge needed: change the text between
+  the quotes and the numbers, save, and upload.
 
-  Anything marked  CONFIRM  was filled in from public reviews or as a
-  starting estimate. Check it against the real catalogue before going live.
+  Beans, cakes, courses and coaching come from the Trade Catalogue 2026.
+  The cafe DRINK menu below is still an estimate: the 2026 catalogues do not
+  list walk in drink prices. Everything marked  CONFIRM  must be checked.
 
   Drink pictures are drawn from "layers" (bottom to top). Each layer has a
   colour and a height (all heights in one drink should add up to about 1).
@@ -22,8 +24,8 @@ window.MYSTIKA = {
     facebook: "https://www.facebook.com/CafeMystika/",
     instagram: "https://www.instagram.com/cafemystika/",
     tripadvisor: "https://www.tripadvisor.com/Restaurant_Review-g3600145-d27734716-Reviews-Cafe_Mystika-Valencia_Negros_Oriental_Negros_Island_Visayas.html",
-    email: "",                          // CONFIRM: add an email to show the email option
-    address: "Stall 1, Valencia Municipal Food Plaza, Smith St., South Poblacion, Valencia, Negros Oriental 6215",
+    email: "angelo.salvoro@gmail.com",  // from the 2026 trade catalogue
+    address: "Luzuriaga Street corner Bacong Valencia Road, South Poblacion, Valencia, Negros Oriental 6215",
     mapsQuery: "Cafe Mystika Valencia Negros Oriental",
     openHour: 9,                        // 9 AM   CONFIRM
     closeHour: 22,                      // 10 PM  CONFIRM (some listings say 11 PM)
@@ -138,76 +140,119 @@ window.MYSTIKA = {
     }
   ],
 
-  // Take home coffee
+  // Take home coffee, from Bold Side Coffee Co. (Trade Catalogue 2026)
   beans: [
     {
-      id: "house-blend", name: "Mystika House Blend", price: 450, unit: "250 g bag",
-      desc: "The same beans in your latte. Chocolate, caramel, low acidity. Great for moka pot and espresso.",
-      notes: ["Chocolate", "Caramel", "Nutty"], color: "#1c1c22"
+      id: "bean-benguet-1kg", name: "Benguet", brand: "Bold Side Coffee Co.", price: 1200, unit: "1 kg bag",
+      desc: "100% Benguet arabica from the Cordillera. Our house special, great as filter or black.",
+      notes: ["Single origin", "Philippine arabica"], color: "#1c1c22"
     },
     {
-      id: "single-origin", name: "Single Origin of the Month", price: 550, unit: "250 g bag",
-      desc: "A rotating Philippine or imported lot, roasted light to medium for pour over.",
-      notes: ["Fruity", "Floral", "Bright"], color: "#214dd1"
+      id: "bean-brusko-1kg", name: "Brusko", brand: "Bold Side Coffee Co.", price: 1150, unit: "1 kg bag",
+      desc: "Batangas barako, liberica and excelsa. Strong, bold, proudly local.",
+      notes: ["Kapeng barako", "Strong black"], color: "#214dd1"
     },
     {
-      id: "drip-bags", name: "Drip Bag Pack", price: 250, unit: "box of 5",
-      desc: "Tear, hang on your cup, pour hot water. Good coffee at the office or on the road.",
-      notes: ["No equipment", "Travel friendly"], color: "#8ea5f3"
+      id: "bean-first-light-1kg", name: "First Light", brand: "Bold Side Coffee Co.", price: 1107, unit: "1 kg bag",
+      desc: "90 arabica, 10 robusta. Made for lattes and milk drinks at home.",
+      notes: ["Espresso", "Milk drinks"], color: "#8ea5f3"
+    },
+    {
+      id: "specialty-200g", name: "Specialty single origin", brand: "Bold Side Coffee Co.", price: 870, unit: "200 g bag",
+      desc: "A rotating single lot, roasted in small batches. Roast date and cupping notes on every bag.",
+      notes: ["Current lot", "Filter or espresso"], color: "#ff7f42"
+    },
+    {
+      id: "wcb", name: "WCB White Cold Brew", brand: "Bold Side Coffee Co.", price: 170, unit: "250 ml bottle",
+      desc: "White. Cold. Bold. Arabica and robusta milk blend in a limited edition bottle.",
+      notes: ["Ready to drink", "5 for 800"], color: "#f6f6f8", bottle: true
     }
   ],
+  beansNote: "All beans are espresso roast unless stated, whole bean or ground free for your brewer. Benguet, Brusko and First Light also come in 500 g and 250 g bags, ask for the price.",
 
-  // Bookable experiences and business services
+  // Whole cakes from the Cafe Mystika kitchen, 8 by 3 inch. Retail prices from the Trade Catalogue 2026.
+  cakes: [
+    { id: "cake-mango", name: "Mango Cream Cake", price: 1250, slice: 125, colors: ["#fff4d6", "#ffc94d", "#fff8e8"] },
+    { id: "cake-ube", name: "Ube Cream Cake", price: 1350, slice: 135, colors: ["#efe3fa", "#8e5bc2", "#f7f0fc"] },
+    { id: "cake-yema", name: "Yema Cake", price: 1350, slice: 135, colors: ["#fff1c9", "#f2c14e", "#fff7e0"] },
+    { id: "cake-choco-de-leche", name: "Choco de Leche", price: 1400, slice: 140, colors: ["#6b3b22", "#c99a6b", "#8a5230"] },
+    { id: "cake-choco-caramel", name: "Choco Caramel", price: 1400, slice: 140, colors: ["#5a3322", "#d6a04f", "#6f4029"] },
+    { id: "cake-mocha-biscoff", name: "Mocha Biscoff", price: 1350, slice: 135, colors: ["#c9a07a", "#8a5a36", "#e3c4a2"] }
+  ],
+  cakesNote: "Each cake cuts into ten to twelve slices. Custom, celebration and corporate cakes need five working days, message us with the date and a photo.",
+
+  // Things people can book. Prices from the Trade Catalogue 2026, public batch per person.
   services: [
     {
       id: "latte-art", name: "Pour your own latte art", group: "experience",
       price: null, priceLabel: "With any latte",                         // CONFIRM
-      duration: "15 minutes",
+      duration: "About 15 minutes",
       desc: "Step behind the bar and pour your own heart, tulip or fish with a barista guiding your hand.",
-      who: "Walk ins welcome. Book ahead for groups."
+      who: "Walk ins welcome. Book ahead for groups of four or more."
     },
     {
-      id: "brewing-101", name: "Brewing 101 class", group: "experience",
-      price: null, priceLabel: "Per person, ask for next batch",         // CONFIRM
-      duration: "About 2 hours",
-      desc: "Learn to brew great coffee at home: grind size, ratios, pour over, French press and moka pot.",
-      who: "Beginners, home brewers, gift for a coffee lover."
+      id: "benchmark", name: "Free Skills Benchmark", group: "experience",
+      price: 0, priceLabel: "Free",
+      duration: "1 hour, latte art or flair",
+      desc: "A coach scores your pour or routine from one to ten on a written sheet you keep, with a plan to improve.",
+      who: "Anyone thinking about coaching or competing."
     },
     {
-      id: "barista-night", name: "Barista Night", group: "experience",
-      price: null, priceLabel: "Free to join",                           // CONFIRM
-      duration: "Friday evenings",
-      desc: "Open Q and A with our baristas. Taste, ask anything, try the bar.",
-      who: "Anyone curious about coffee."
+      id: "cupping", name: "Coffee cupping with The Travelling Cupper", group: "experience",
+      price: 3500, priceLabel: "per session, up to 6 people",
+      duration: "Guided session",
+      desc: "Taste Philippine and imported coffees side by side the way roasters and judges do.",
+      who: "Friends, teams, coffee curious. Split between six it is under ₱600 each."
     },
     {
-      id: "mobile-bar", name: "Mobile coffee and mocktail bar", group: "business",
-      price: null, priceLabel: "Packages on request",
-      duration: "Weddings, birthdays, corporate events",
-      desc: "We bring the espresso machine, baristas and a curated drink list to your venue.",
-      who: "Events from 30 guests."                                       // CONFIRM
+      id: "espresso-calibration", name: "Espresso Calibration", group: "course",
+      price: 2500, priceLabel: "per person", duration: "1 day",
+      desc: "Dose, yield, time and grind. The fastest way to better espresso from the machine you already have.",
+      who: "Home baristas and new cafe staff."
     },
     {
-      id: "maintenance", name: "Coffee machine maintenance", group: "business",
-      price: null, priceLabel: "Quote after inspection",
-      duration: "On site",
-      desc: "Deep cleaning, calibration and preventive care so every shot tastes the same all day.",
-      who: "Cafes, restaurants, hotels, offices."
+      id: "brewing-101", name: "Brewing 101", group: "course",
+      price: 5250, priceLabel: "per person", duration: "2 days",
+      desc: "Pour over and manual brewing, ratios and water, so the coffee at home tastes like the bar.",
+      who: "Home brewers and filter coffee lovers."
     },
     {
-      id: "consultation", name: "Cafe business consultation", group: "business",
-      price: null, priceLabel: "Book a first call",
-      duration: "Concept to opening day",
-      desc: "Concept, menu, costing, equipment, workflow and barista training for your own cafe.",
-      who: "New and existing cafe owners."
+      id: "latte-art-101", name: "Latte Art 101", group: "course",
+      price: 5250, priceLabel: "per person", duration: "3 days",
+      desc: "Milk texturing and the core patterns: heart, tulip and rosetta.",
+      who: "Beginners who want the pour, not just the photo."
+    },
+    {
+      id: "barista-101", name: "Barista 101", group: "course",
+      price: 7500, priceLabel: "per person", duration: "4 days",
+      desc: "The foundation course, from bean origin to espresso, milk and machine care. Finish ready to run a bar.",
+      who: "Future baristas and cafe owners."
+    },
+    {
+      id: "mixology-101", name: "Mixology 101", group: "course",
+      price: 7500, priceLabel: "per person", duration: "3 days",
+      desc: "Spirits, tools, technique and the classic cocktails, taught by The Pinoy Drinker.",
+      who: "Future bartenders and home entertainers."
+    },
+    {
+      id: "coaching-single", name: "Open Floor coaching, single session", group: "coaching",
+      price: 1000, priceLabel: "per 3 hour session", duration: "Latte art or flair",
+      desc: "Train on the studio bar with a WorldSkills coach correcting every pour.",
+      who: "Students less 20 percent, weekday mornings less 15 percent."
+    },
+    {
+      id: "coaching-month", name: "Monthly Pass", group: "coaching",
+      price: 10000, priceLabel: "20 sessions in 30 days", duration: "Latte art or flair",
+      desc: "Sixty coached hours, about ₱167 an hour. Entry and exit scores so you can see yourself improve.",
+      who: "Payable in three parts. Bring a friend who buys a pass and get 3 free sessions."
     }
   ],
 
-  // Offers shown on the page. CONFIRM every one before going live.
-  offers: [
-    { title: "Bring your own cup", text: "₱10 off any drink when you bring a reusable cup." },
-    { title: "Refill your bag", text: "Return your empty Mystika bean bag and get ₱30 off the next one." },
-    { title: "Tenth cup is on us", text: "Buy 9 handcrafted drinks, the 10th is free. Ask for a stamp card." }
+  // Proof points for the "fair to you, fair to the farmer" section
+  promises: [
+    { title: "Roast date on every bag", text: "Small batches, about a tonne a month, so what you buy is fresh." },
+    { title: "Philippine coffee first", text: "Benguet arabica and Batangas barako sit at the top of our roast ladder." },
+    { title: "Priced for Negros, not Makati", text: "Courses from ₱2,500 and installments on anything above ₱7,000, at no interest." }
   ],
 
   // What guests say. Paraphrased from public Tripadvisor reviews. CONFIRM or replace with exact quotes.

@@ -28,11 +28,13 @@
     "name": "Cafe Mystika",
     "url": "https://www.cafemystika.com/",
     "telephone": "+639352158822",
+    "email": "angelo.salvoro@gmail.com",
     "servesCuisine": "Specialty coffee",
+    "founder": { "@type": "Person", "name": "Angelo Salvoro", "jobTitle": "TESDA National TVET Trainer and Assessor, WorldSkills Philippines National Coach" },
     "priceRange": "₱₱",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Stall 1, Valencia Municipal Food Plaza, Smith St., South Poblacion",
+      "streetAddress": "Luzuriaga Street corner Bacong Valencia Road, South Poblacion",
       "addressLocality": "Valencia",
       "addressRegion": "Negros Oriental",
       "postalCode": "6215",
@@ -75,7 +77,7 @@
 
   <a class="skip" href="#main">Skip to content</a>
 
-  <div class="statusbar">
+  <div class="statusbar" role="region" aria-label="Opening hours">
     <span class="status-dot" data-open-dot aria-hidden="true"></span>
     <span data-open-text role="status">Open daily 9 AM to 10 PM</span>
     <a href="#visit" class="statusbar-link">Stall 1, Valencia Food Plaza</a>
@@ -86,8 +88,9 @@
       <a href="#top" class="wordmark" aria-label="Cafe Mystika home">mystika</a>
       <nav class="nav" aria-label="Main">
         <a href="#menu">Menu</a>
-        <a href="#beans">Beans</a>
-        <a href="#book">Classes and services</a>
+        <a href="#beans">Beans and cakes</a>
+        <a href="#book">Learn</a>
+        <a href="trade.html">For business</a>
         <a href="#visit">Visit</a>
       </nav>
       <div class="header-actions">
@@ -133,7 +136,7 @@
         <p class="lede">Hand roasted specialty coffee from Valencia, Negros Oriental. Order ahead and skip the line, take fresh beans home, or pour your own latte art.</p>
         <div class="hero-ctas">
           <a class="btn btn-ink btn-lg" href="#menu">Order for pickup</a>
-          <a class="btn btn-mango btn-lg" href="#book">Book a class or service</a>
+          <a class="btn btn-mango btn-lg" href="#book">Book a class</a>
         </div>
       </div>
     </section>
@@ -179,11 +182,11 @@
           </li>
           <li class="stat">
             <svg class="arc arc-b" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="56"/><path d="M4 60a56 56 0 0 0 112 0"/></svg>
-            <strong>2021</strong><span>Roasting by hand since</span>
+            <strong>1 t</strong><span>Beans roasted by hand every month</span>
           </li>
           <li class="stat">
             <svg class="arc" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="56"/><path d="M60 4a56 56 0 1 1-56 56"/></svg>
-            <strong>7</strong><span>Days a week, 9 AM to 10 PM</span>
+            <strong>13</strong><span>Roast profiles, Benguet to barako</span>
           </li>
         </ul>
       </div>
@@ -214,22 +217,71 @@
       <div class="wrap">
         <div class="section-head center">
           <h2 id="beans-h">Take Mystika home</h2>
-          <p>Roasted in small batches every week, so your bag is days old, not months. Tell us how you brew and we grind it for you.</p>
+          <p>Roasted by our own Bold Side Coffee Co. in small batches, with the roast date on every bag. Tell us how you brew and we grind it for you, free.</p>
         </div>
         <div class="beans" data-beans></div>
+        <p class="footnote center-note" data-beans-note></p>
+      </div>
+    </section>
+
+    <section class="section section-cakes" id="cakes" aria-labelledby="cakes-h">
+      <div class="wrap">
+        <div class="section-head center">
+          <h2 id="cakes-h">Whole cakes from our kitchen</h2>
+          <p>Baked at Cafe Mystika. Add one to your order and we confirm the pickup date when we reply.</p>
+        </div>
+        <div class="cakes" data-cakes></div>
+        <p class="footnote center-note" data-cakes-note></p>
       </div>
     </section>
 
     <section class="section section-book" id="book" aria-labelledby="book-h">
       <div class="wrap">
         <div class="section-head">
-          <h2 id="book-h">Book an experience</h2>
-          <p>Learn the craft, bring the cafe to your event, or get expert help for your own coffee business.</p>
+          <h2 id="book-h">Learn at the Studio</h2>
+          <p>Taught by Angelo Salvoro, TESDA National TVET Trainer and Assessor and WorldSkills Philippines National Coach. Every course comes with a printed manual, a practical assessment and a certificate.</p>
         </div>
-        <h3 class="group-title">For coffee lovers</h3>
+        <h3 class="group-title">Try it first</h3>
         <div class="services" data-services="experience"></div>
-        <h3 class="group-title">For events and businesses</h3>
-        <div class="services" data-services="business"></div>
+        <h3 class="group-title">Courses, public batch prices per person</h3>
+        <div class="services" data-services="course"></div>
+        <h3 class="group-title">Coaching for latte art and flair</h3>
+        <div class="services" data-services="coaching"></div>
+        <p class="learn-more">Sixteen courses in all, including Brewing 102, Latte Art 102, Flairtending, Coffee Sensory, Matcha and Milk Tea. <a href="trade.html#training">See every course and team rates</a></p>
+      </div>
+    </section>
+
+    <section class="section section-cupper" id="cupper" aria-labelledby="cupper-h">
+      <div class="wrap cupper">
+        <div class="cupper-copy">
+          <img class="cupper-mark" src="assets/img/tc-mark-white.webp" width="148" height="192" alt="The Travelling Cupper logo: a walking cupper with a coffee bean inside a map pin shaped like a cupping spoon">
+          <h2 id="cupper-h">Taste the Philippines. One cup at a time.</h2>
+          <p class="cupper-est">The Travelling Cupper, est. 2025, Dumaguete</p>
+          <p>Our Philippine origins and cupping project: tasting coffee from across the islands side by side, from Benguet arabica in the Cordillera to barako from Batangas, and bringing the best of it to the bar.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-mango btn-lg" href="#book-cupping">Book a cupping session</a>
+            <a class="btn btn-outline-light btn-lg" href="#beans">Buy Benguet beans</a>
+          </div>
+        </div>
+        <div class="cupper-map">
+          <img src="assets/img/tc-map-white.webp" width="532" height="880" loading="lazy" alt="Outline map of the Philippine islands">
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-biz" id="business" aria-labelledby="biz-h">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="biz-h">Run a cafe, hotel, event or school?</h2>
+          <p>We supply the coffee, fix the machines, train the people and fill the pastry case for businesses across Negros Oriental, Siquijor, Bohol and Dipolog. Published 2026 prices, and a quote the same day.</p>
+        </div>
+        <ul class="biz-doors">
+          <li><a href="trade.html#for-cafes"><strong>Cafes and bars</strong><span>Beans from ₱918 a kilo, machine plans from ₱6,500 a year, Starter package ₱7,900</span></a></li>
+          <li><a href="trade.html#for-hotels"><strong>Hotels, resorts and restaurants</strong><span>Ten staff certified in barista, mixology and sensory for ₱170,000</span></a></li>
+          <li><a href="trade.html#for-events"><strong>Event organizers</strong><span>Staffed coffee, cocktail and dry bars from ₱10,500, your 10 percent share included</span></a></li>
+          <li><a href="trade.html#for-schools"><strong>Colleges, schools and LGUs</strong><span>Student certification cohorts, lab design and OJT placement at no fee</span></a></li>
+        </ul>
+        <p class="learn-more"><a class="btn btn-ink" href="trade.html">See the full trade catalogue</a></p>
       </div>
     </section>
 
@@ -238,7 +290,7 @@
         <div class="mission-art" aria-hidden="true"><svg><use href="#barista"/></svg></div>
         <div class="mission-copy">
           <h2 id="mission-h">Fair to you, fair to the farmer.</h2>
-          <p>Since 2021 we have bought green coffee at a fair price, roasted it by hand, and served it at a price our neighbours can afford. Help us waste less and get rewarded for it.</p>
+          <p>Since 2021 our mission has been sustainable, ethical, hand roasted specialty coffee at a fair price for you and for the farmers who grow it.</p>
           <ul class="offers" data-offers></ul>
         </div>
       </div>
@@ -290,11 +342,15 @@
           </details>
           <details>
             <summary>Do you do coffee for weddings and company events?</summary>
-            <p>Yes. We bring the machine, the baristas and a drink list made for your guests. Send a booking request with your date and headcount and we will reply with packages.</p>
+            <p>Yes. Mystique Flavors and Cafe Mystika Mobile bring a staffed coffee, cocktail or dry bar, from ₱10,500 for up to 30 guests. <a href="trade.html#events">See every package</a>, or text the date, venue and guest count for a quote the same day.</p>
           </details>
           <details>
             <summary>Can you help me open my own cafe?</summary>
-            <p>That is exactly what our consultation is for: concept, menu costing, equipment, workflow and barista training. Book a first call and tell us where you are at.</p>
+            <p>Yes. Start with a Diagnostic Day for ₱7,500, or go straight to Cafe Setup and Launch. The Opening package bundles training, a costed menu, machine setup and your first beans for ₱55,000. <a href="trade.html#consultancy">See consultancy</a></p>
+          </details>
+          <details>
+            <summary>Do you sell beans and pastry wholesale?</summary>
+            <p>Yes. Thirteen roast profiles by the kilo with volume bands, plus muffins, bars, cookies and whole cakes on standing weekly orders. <a href="trade.html#coffee">See trade prices</a></p>
           </details>
         </div>
       </div>
@@ -310,6 +366,7 @@
       <div>
         <p class="footer-h">Find us</p>
         <p data-address></p>
+        <p class="footer-contact"><a data-link="tel" href="#" data-phone-display></a><a data-link="email" href="#" data-email-display></a></p>
       </div>
       <div>
         <p class="footer-h">Follow</p>
@@ -317,11 +374,12 @@
           <a data-link="facebook" href="#" target="_blank" rel="noopener">Facebook</a>
           <a data-link="instagram" href="#" target="_blank" rel="noopener">Instagram</a>
           <a data-link="tripadvisor" href="#" target="_blank" rel="noopener">Tripadvisor</a>
+          <a href="trade.html">For business</a>
         </p>
       </div>
     </div>
     <p class="footer-word" aria-hidden="true">mystika</p>
-    <p class="wrap copyright">© <span data-year></span> Cafe Mystika</p>
+    <p class="wrap copyright">© <span data-year></span> Cafe Mystika. Part of Cafe Mystika Studio, with Bold Side Coffee Co., Mystique Flavors, Meraki Machine, The Travelling Cupper and The Pinoy Drinker.</p>
   </footer>
 
   <!-- Mobile action bar -->
@@ -432,6 +490,7 @@
 
   <div class="toast" data-toast role="status" aria-live="polite"></div>
 
+  <script src="assets/js/core.js"></script>
   <script src="assets/js/catalog.js"></script>
   <script src="assets/js/app.js"></script>
 </body>

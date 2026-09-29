@@ -10,15 +10,23 @@ No monthly platform fees, no database, no plugins to update. It is plain HTML, C
 
 ## Change the menu, prices, hours or contact details
 
-Open `assets/js/catalog.js`. Everything customers see about your products lives there:
+The site has two pages:
+
+- `index.html`, the cafe: drinks, beans, whole cakes, courses and coaching, The Travelling Cupper, and a doorway for businesses.
+- `trade.html`, **For business**: the full 2026 trade catalogue with a quote builder. Buyers add items, the page applies bean volume bands, pastry tiers, group training rates and coaching discounts automatically, and sends you the request by text, Messenger or email.
+
+Trade prices live in `assets/js/trade.js`. Update the numbers and the `validity` line when you publish a new catalogue.
+
+Open `assets/js/catalog.js` for the home page. Everything customers see about your products lives there:
 
 | What | Where in the file |
 | --- | --- |
 | Phone, Messenger, address, hours | `business` |
-| Drinks and prices | `menu` |
-| Beans and drip bags | `beans` |
-| Classes and business services | `services` |
-| Promotions | `offers` |
+| Drinks and prices (still estimates) | `menu` |
+| Beans and cold brew | `beans` |
+| Whole cakes | `cakes` |
+| Courses, coaching, experiences | `services` |
+| Proof points under "Fair to you" | `promises` |
 | Reviews | `reviews` |
 
 Search the file for `CONFIRM`. Those lines were filled in from public reviews or as estimates and must be checked against the real catalogue before launch.
@@ -46,8 +54,12 @@ To preview on your computer: open a terminal in this folder, run `python3 -m htt
 ```
 index.html              page structure, SEO and Google business data
 assets/css/styles.css   design (colours at the top)
-assets/js/catalog.js    all products, services, prices and contact info
-assets/js/app.js        cart, booking, open now status
-assets/img/             favicon and social share image
+trade.html              For business page
+assets/js/catalog.js    home page products, services, prices and contact info
+assets/js/trade.js      every trade price from the 2026 catalogues
+assets/js/core.js       shared: messages, sending, form checks
+assets/js/app.js        home page: cart, booking, open now status
+assets/js/trade-app.js  For business page: catalogue tables and quote builder
+assets/img/             favicon, social share image, Travelling Cupper logo and map
 .claude/skills/         design skills (frontend-design, ui-ux-pro-max); not part of the website
 ```

@@ -3,14 +3,9 @@
 
   var D = window.MYSTIKA;
   var B = D.business;
-  var $ = function (s, r) { return (r || document).querySelector(s); };
-  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-  var money = function (n) { return B.currency + Number(n).toLocaleString("en-PH"); };
-  var esc = function (s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
-  };
+  var MK = window.MK;
+  var $ = MK.$, $$ = MK.$$, esc = MK.esc, money = MK.money, store = MK.store;
+  var toast = MK.toast, hideToast = MK.hideToast, validate = MK.validate, setBackgroundInert = MK.setBackgroundInert;
   var uid = 0;
 
   /* ---------- Drink illustrations drawn from catalogue layers ---------- */
@@ -60,6 +55,34 @@
       '<rect x="17" y="62" width="66" height="26" fill="#ff7f42"/>' +
       '<text x="50" y="80" text-anchor="middle" font-family="Outfit, sans-serif" font-weight="500" font-size="15" fill="#fff">mystika</text>' +
       '</svg>';
+  }
+
+  function bottleSVG(item) {
+    return '<svg class="bag" viewBox="0 0 100 130" aria-hidden="true" focusable="false">' +
+      '<rect x="40" y="8" width="20" height="12" rx="3" fill="#1c1c22"/>' +
+      '<path d="M42 20h16v10q14 8 14 24v62q0 8-8 8H36q-8 0-8-8V54q0-16 14-24z" fill="#efe3cf" stroke="#1c1c22" stroke-width="3"/>' +
+      '<rect x="29" y="62" width="42" height="34" fill="#ff7f42"/>' +
+      '<text x="50" y="84" text-anchor="middle" font-family="Outfit, sans-serif" font-weight="600" font-size="15" fill="#fff">WCB</text>' +
+      '</svg>';
+  }
+
+  function cakeSVG(item) {
+    var c = item.colors;
+    return '<svg class="cake" viewBox="0 0 120 100" aria-hidden="true" focusable="false">' +
+      '<ellipse cx="60" cy="84" rx="50" ry="10" fill="#1c1c22" opacity=".12"/>' +
+      '<path d="M14 44v34q0 10 46 10t46-10V44z" fill="' + c[0] + '" stroke="#1c1c22" stroke-width="3"/>' +
+      '<path d="M14 60q0 10 46 10t46-10" fill="none" stroke="' + c[1] + '" stroke-width="6"/>' +
+      '<ellipse cx="60" cy="44" rx="46" ry="12" fill="' + c[2] + '" stroke="#1c1c22" stroke-width="3"/>' +
+      '<path d="M20 48q6 8 12 0t12 0 12 0 12 0 12 0 12 0 12 0" fill="none" stroke="' + c[1] + '" stroke-width="4" stroke-linecap="round"/>' +
+      '<circle cx="46" cy="40" r="4" fill="' + c[1] + '"/><circle cx="62" cy="36" r="4" fill="' + c[1] + '"/><circle cx="76" cy="42" r="4" fill="' + c[1] + '"/>' +
+      '</svg>';
+  }
+
+  function productArt(p, option) {
+    if (p.layers) return drinkSVG(Object.assign({}, p, { ice: p.ice && option !== "Hot" }));
+    if (p.colors) return cakeSVG(p);
+    if (p.bottle) return bottleSVG(p);
+    return bagSVG(p);
   }
 
   /* ---------- Opening hours ---------- */
@@ -115,18 +138,11 @@
     return opts;
   }
 
-  /* ---------- Storage (optional, page works without it) ---------- */
-
-  var store = {
-    get: function (k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ignore */ } }
-  };
-
   /* ---------- Cart ---------- */
 
   var cart = store.get("mystika-cart", []);
   var findProduct = function (id) {
-    return D.menu.filter(function (x) { return x.id === id; })[0] || D.beans.filter(function (x) { return x.id === id; })[0];
+    return D.menu.concat(D.beans, D.cakes).filter(function (x) { return x.id === id; })[0];
   };
   cart = cart.filter(function (l) { return findProduct(l.id); });
 
@@ -163,7 +179,7 @@
     list.innerHTML = cart.map(function (l) {
       var p = findProduct(l.id);
       return '<li class="cart-line">' +
-        '<div class="cart-line-art">' + (p.layers ? drinkSVG(Object.assign({}, p, { ice: p.ice && l.option !== "Hot" })) : bagSVG(p)) + '</div>' +
+        '<div class="cart-line-art">' + productArt(p, l.option) + '</div>' +
         '<div class="cart-line-info"><p class="cart-line-name">' + esc(p.name) + '</p>' +
         '<p class="cart-line-meta">' + (l.option ? esc(l.option) + ", " : "") + money(p.price) + ' each</p></div>' +
         '<div class="qty" role="group" aria-label="Quantity of ' + esc(p.name) + '">' +
@@ -180,13 +196,6 @@
   }
 
   var lastFocus = null;
-  function setBackgroundInert(on) {
-    $$("body > a.skip, body > .statusbar, body > .site-header, body > main, body > footer, body > .actionbar").forEach(function (el) {
-      if (on) { el.setAttribute("inert", ""); el.setAttribute("aria-hidden", "true"); }
-      else { el.removeAttribute("inert"); el.removeAttribute("aria-hidden"); }
-    });
-  }
-
   function openCart() {
     lastFocus = document.activeElement;
     var sel = $("[data-pickup-times]");
@@ -226,49 +235,6 @@
   }
 
   /* ---------- Sending (SMS or Messenger, no backend needed) ---------- */
-
-  var isPhone = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
-
-  function send(channel, message) {
-    if (channel === "sms") {
-      toast(isPhone
-        ? "Opening your messages app with everything written. Press send there."
-        : "Texting works best from a phone. If nothing opened, use Send on Messenger or call " + B.phoneDisplay + ".", null, null, 6000);
-      window.location.href = "sms:" + B.phone + "?body=" + encodeURIComponent(message);
-      return;
-    }
-    var open = function () { window.open(B.messenger, "_blank", "noopener"); };
-    var failed = function () {
-      toast("Messenger is opening. Type your order there, or use Send by text instead.", null, null, 6000);
-      open();
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(message).then(function () {
-        toast("Message copied. Paste it in the Messenger chat and press send.", null, null, 6000);
-        open();
-      }, failed);
-    } else {
-      failed();
-    }
-  }
-
-  /* ---------- Toast ---------- */
-
-  var toastTimer;
-  function hideToast() {
-    var t = $("[data-toast]");
-    t.classList.remove("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.innerHTML = ""; }, 200);
-  }
-  function toast(text, actionLabel, action, ms) {
-    var t = $("[data-toast]");
-    clearTimeout(toastTimer);
-    t.innerHTML = "<span>" + esc(text) + "</span>" + (actionLabel ? '<button type="button">' + esc(actionLabel) + "</button>" : "");
-    if (actionLabel) $("button", t).addEventListener("click", function () { hideToast(); action(); });
-    t.classList.add("show");
-    toastTimer = setTimeout(hideToast, ms || 5000);
-  }
 
   /* ---------- Render sections ---------- */
 
@@ -325,10 +291,22 @@
       .map(function (m) { return productCard(m, "card card-row"); }).join("");
   }
 
+  function renderCakes() {
+    $("[data-cakes]").innerHTML = D.cakes.map(function (c) {
+      return '<article class="cake-card" data-product="' + c.id + '">' +
+        '<div class="art">' + cakeSVG(c) + "</div>" +
+        '<div class="card-body"><h3>' + esc(c.name) + "</h3>" +
+        '<p class="unit">Whole 8 inch cake, or ' + money(c.slice) + " a slice at the bar</p>" +
+        '<div class="best-foot"><span class="price">' + money(c.price) + '</span><button class="btn btn-ink btn-add" type="button" data-add="' + c.id + '" aria-label="Add ' + esc(c.name) + ' to order">Add to order</button></div></div></article>';
+    }).join("");
+    $("[data-cakes-note]").textContent = D.cakesNote;
+  }
+
   function renderBeans() {
+    $("[data-beans-note]").textContent = D.beansNote;
     $("[data-beans]").innerHTML = D.beans.map(function (b) {
       return '<article class="bean" data-product="' + b.id + '">' +
-        '<div class="art">' + bagSVG(b) + "</div>" +
+        '<div class="art">' + (b.bottle ? bottleSVG(b) : bagSVG(b)) + "</div>" +
         '<div class="card-body"><div class="card-top"><h3>' + esc(b.name) + '</h3><span class="price">' + money(b.price) + "</span></div>" +
         '<p class="desc">' + esc(b.desc) + "</p>" +
         '<ul class="notes">' + b.notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul>" +
@@ -345,14 +323,14 @@
           '<p class="service-meta">' + esc(s.duration) + "</p>" +
           '<p class="desc">' + esc(s.desc) + "</p>" +
           '<p class="who">' + esc(s.who) + "</p>" +
-          '<div class="service-foot"><span class="price">' + (s.price ? money(s.price) : esc(s.priceLabel)) + "</span>" +
+          '<div class="service-foot"><span class="price">' + (s.price ? money(s.price) + ' <span class="per">' + esc(s.priceLabel) + "</span>" : esc(s.priceLabel)) + "</span>" +
           '<button class="btn btn-ink" type="button" data-book="' + s.id + '">Book this</button></div></article>';
       }).join("");
     });
   }
 
   function renderOffers() {
-    $("[data-offers]").innerHTML = D.offers.map(function (o) {
+    $("[data-offers]").innerHTML = D.promises.map(function (o) {
       return "<li><strong>" + esc(o.title) + "</strong><span>" + esc(o.text) + "</span></li>";
     }).join("");
   }
@@ -365,21 +343,7 @@
   }
 
   function renderContact() {
-    var links = {
-      tel: "tel:" + B.phone,
-      messenger: B.messenger,
-      facebook: B.facebook,
-      instagram: B.instagram,
-      tripadvisor: B.tripadvisor,
-      directions: "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(B.mapsQuery)
-    };
-    $$("[data-link]").forEach(function (a) { a.href = links[a.getAttribute("data-link")]; });
-    $$('a[target="_blank"]').forEach(function (a) {
-      if (!$(".sr-only", a)) a.insertAdjacentHTML("beforeend", '<span class="sr-only"> (opens in a new tab)</span>');
-    });
-    $$("[data-address]").forEach(function (el) { el.textContent = B.address; });
-    $$("[data-phone-display]").forEach(function (el) { el.textContent = B.phoneDisplay; });
-    $$("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+    MK.renderLinks(B);
     var map = $("[data-map]");
     if ("IntersectionObserver" in window) {
       var io = new IntersectionObserver(function (e) {
@@ -396,7 +360,12 @@
   var dialog = $("[data-booking]");
   function openBooking(id) {
     var sel = $("[data-booking-services]");
-    sel.innerHTML = D.services.map(function (s) { return '<option value="' + s.id + '">' + esc(s.name) + "</option>"; }).join("");
+    var groups = [["experience", "Experiences"], ["course", "Courses, public batch"], ["coaching", "Coaching"]];
+    sel.innerHTML = groups.map(function (g) {
+      return '<optgroup label="' + g[1] + '">' + D.services.filter(function (s) { return s.group === g[0]; }).map(function (s) {
+        return '<option value="' + s.id + '">' + esc(s.name) + (s.price ? ", " + money(s.price) : s.price === 0 ? ", free" : "") + "</option>";
+      }).join("") + "</optgroup>";
+    }).join("");
     sel.value = id;
     setBookingTitle();
     var today = new Date();
@@ -417,7 +386,7 @@
 
   function bookingMessage(f) {
     var s = D.services.filter(function (x) { return x.id === f.service.value; })[0];
-    var msg = "Hi Cafe Mystika! I'd like to book: " + s.name +
+    var msg = "Hi Cafe Mystika! I'd like to book: " + s.name + (s.price ? " (" + money(s.price) + " " + s.priceLabel + ")" : "") +
       "\nDate: " + f.date.value +
       "\nPeople: " + f.pax.value +
       "\nName: " + f.name.value.trim() +
@@ -425,48 +394,6 @@
     if (f.notes.value.trim()) msg += "\nNotes: " + f.notes.value.trim();
     return msg;
   }
-
-  var MESSAGES = {
-    name: "Add your name so we know who it is for.",
-    time: "Choose a pickup time.",
-    date: "Pick the date you would like.",
-    pax: "Enter how many people are coming, 1 or more.",
-    phone: "Enter your mobile number with 11 digits, like 0917 123 4567."
-  };
-
-  function checkField(el) {
-    var v = el.value.trim();
-    var ok = v !== "" && el.checkValidity();
-    if (el.name === "phone") {
-      var digits = v.replace(/\D/g, "");
-      ok = ok && digits.length >= 10 && digits.length <= 12;
-    }
-    if (el.name === "date" && ok && el.min) ok = v >= el.min;
-    var err = document.getElementById(el.id + "-err");
-    el.setAttribute("aria-invalid", String(!ok));
-    if (err) {
-      err.textContent = ok ? "" : MESSAGES[el.name];
-      err.hidden = ok;
-    }
-    return ok;
-  }
-
-  function validate(form, fields) {
-    form.setAttribute("data-tried", "");
-    var bad = null;
-    fields.forEach(function (n) {
-      if (!checkField(form[n]) && !bad) bad = form[n];
-    });
-    if (bad) bad.focus();
-    return !bad;
-  }
-
-  // Once someone has tried to send, re-check each field as they leave it
-  document.addEventListener("focusout", function (e) {
-    var el = e.target;
-    var form = el.form;
-    if (form && form.hasAttribute("data-tried") && MESSAGES[el.name]) checkField(el);
-  });
 
   /* ---------- Events ---------- */
 
@@ -514,7 +441,7 @@
       var f = $("[data-cart-form]");
       if (!validate(f, ["name", "time"])) return;
       store.set("mystika-name", f.name.value.trim());
-      send(t.getAttribute("data-send"), orderMessage(f));
+      MK.send(t.getAttribute("data-send"), orderMessage(f), B, "Pickup order");
       return;
     }
     if (t.hasAttribute("data-book")) { openBooking(t.getAttribute("data-book")); return; }
@@ -522,7 +449,7 @@
       var bf = $("[data-booking-form]");
       if (!validate(bf, ["date", "pax", "name", "phone"])) return;
       store.set("mystika-contact", { name: bf.name.value.trim(), phone: bf.phone.value.trim() });
-      send(t.getAttribute("data-book-send"), bookingMessage(bf));
+      MK.send(t.getAttribute("data-book-send"), bookingMessage(bf), B, "Booking request");
       return;
     }
   });
@@ -576,6 +503,7 @@
   renderBestsellers();
   renderMenu();
   renderBeans();
+  renderCakes();
   renderServices();
   renderOffers();
   renderReviews();

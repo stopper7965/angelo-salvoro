@@ -38,3 +38,17 @@ Subtle only: 180 to 250ms colour and lift on hover, one hero entrance, a slow an
 - Floating Messenger button on desktop, Call, Book and Order bar on phones.
 - Join band: new roasts, class batches and events on Messenger.
 - Exit offer: `welcomeOffer` in `catalog.js`, off until `enabled: true`. Preview with `?preview-offer`.
+
+## Logos
+
+All in `assets/img/brand/` (plus The Travelling Cupper in `assets/img/`), transparent WebP. Use `-light` on black sections and `-dark` on white.
+
+| Brand | Files | Where |
+| --- | --- | --- |
+| Cafe Mystika Studio | `studio-wordmark-light-compact` (header), `studio-wordmark-light` / `-dark` (full lockup with tagline) | Header on every page, footer |
+| Cafe Mystika | `mystika-mark-light` / `-dark` | Brand row, favicon (`favicon.png`, `apple-touch-icon.png`) |
+| Bold Side Coffee Co. | `boldside-light` / `-dark` | Beans section, bean bag labels, brand row |
+| Mystique Flavors | `mixology-badge` (round badge, works on both) | Brand row, For business brands grid |
+| The Travelling Cupper | `tc-mark-white` / `tc-mark-ink` | Cupper section, brand row |
+
+Keep the logo gold as designed; the interface gold (`--gold`) is for buttons and accents only.

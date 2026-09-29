@@ -231,7 +231,10 @@
   function renderStatic() {
     $("[data-validity]").textContent = T.validity + " " + T.installments;
     $("[data-credentials]").innerHTML = T.credentials.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("");
-    $("[data-brands]").innerHTML = T.brands.map(function (b) { return "<li><strong>" + esc(b.name) + "</strong><span>" + esc(b.does) + "</span></li>"; }).join("");
+    $("[data-brands]").innerHTML = T.brands.map(function (b) {
+      return "<li>" + (b.logo ? '<img src="' + esc(b.logo) + '" alt="" loading="lazy">' : '<span class="brand-initial" aria-hidden="true">' + esc(b.name.replace(/^The /, "").charAt(0)) + "</span>") +
+        "<strong>" + esc(b.name) + "</strong><span>" + esc(b.does) + "</span></li>";
+    }).join("");
     $("[data-terms]").innerHTML = T.terms.map(function (t) { return "<div><dt>" + esc(t[0]) + "</dt><dd>" + esc(t[1]) + "</dd></div>"; }).join("");
   }
 

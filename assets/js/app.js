@@ -53,7 +53,7 @@
       '<path d="M22 18 L78 18 L84 120 Q84 126 78 126 L22 126 Q16 126 16 120 Z" fill="' + bean.color + '"/>' +
       '<path d="M22 18 L78 18 L77 30 L23 30 Z" fill="#000" fill-opacity=".2"/>' +
       '<rect x="17" y="62" width="66" height="26" fill="#e2ae2a"/>' +
-      '<text x="50" y="80" text-anchor="middle" font-family="DM Sans, sans-serif" font-weight="700" font-size="15" fill="#0a0a0a">mystika</text>' +
+      '<image href="assets/img/brand/boldside-dark.webp" x="40" y="65" width="20" height="18"/>' +
       '</svg>';
   }
 

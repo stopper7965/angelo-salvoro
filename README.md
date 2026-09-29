@@ -68,5 +68,6 @@ assets/js/core.js       shared: messages, sending, form checks
 assets/js/app.js        home page: cart, booking, open now status
 assets/js/trade-app.js  For business page: catalogue tables and quote builder
 assets/img/             favicon, social share image, Travelling Cupper logo and map
+assets/img/brand/       brand logos, light and dark versions (see design-system)
 .claude/skills/         design skills (frontend-design, ui-ux-pro-max); not part of the website
 ```

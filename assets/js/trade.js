@@ -40,12 +40,12 @@ window.MYSTIKA_TRADE = {
   ],
 
   brands: [
-    { name: "Cafe Mystika Studio", does: "Training, consultancy and supply" },
-    { name: "Bold Side Coffee Co.", does: "Small batch roastery and wholesale beans" },
-    { name: "Cafe Mystika", does: "Coffee bar, pastry kitchen and mobile coffee catering" },
-    { name: "Mystique Flavors", does: "Mobile bar and event beverage stations" },
+    { name: "Cafe Mystika Studio", does: "Training, consultancy and supply", logo: "assets/img/brand/studio-wordmark-light.webp" },
+    { name: "Bold Side Coffee Co.", does: "Small batch roastery and wholesale beans", logo: "assets/img/brand/boldside-light.webp" },
+    { name: "Cafe Mystika", does: "Coffee bar, pastry kitchen and mobile coffee catering", logo: "assets/img/brand/mystika-mark-light.webp" },
+    { name: "Mystique Flavors", does: "Mobile bar and event beverage stations", logo: "assets/img/brand/mixology-badge.webp" },
     { name: "Meraki Machine", does: "Espresso equipment, installation and service" },
-    { name: "The Travelling Cupper", does: "Philippine origins and cupping" },
+    { name: "The Travelling Cupper", does: "Philippine origins and cupping", logo: "assets/img/tc-mark-white.webp" },
     { name: "The Pinoy Drinker", does: "Bar craft, spirits and mixology" }
   ],
 
